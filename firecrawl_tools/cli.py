@@ -132,7 +132,7 @@ Examples:
 async def run_scrape(args, tools):
     """Run the scrape command."""
     scrape_tool = await tools.get_scrape_tool()
-    result = await scrape_tool.invoke({
+    result = await scrape_tool.ainvoke({
         "url": args.url,
         "formats": args.formats,
         "only_main_content": args.only_main_content,
@@ -150,7 +150,7 @@ async def run_search(args, tools):
     if args.scrape:
         scrape_options = {"formats": ["markdown"], "onlyMainContent": True}
     
-    result = await search_tool.invoke({
+    result = await search_tool.ainvoke({
         "query": args.query,
         "limit": args.limit,
         "lang": args.lang,
@@ -163,7 +163,7 @@ async def run_search(args, tools):
 async def run_map(args, tools):
     """Run the map command."""
     map_tool = await tools.get_map_tool()
-    result = await map_tool.invoke({
+    result = await map_tool.ainvoke({
         "url": args.url,
         "search": args.search,
         "ignore_sitemap": args.ignore_sitemap,
@@ -183,7 +183,7 @@ async def run_extract(args, tools):
         with open(args.schema, 'r') as f:
             schema = json.load(f)
     
-    result = await extract_tool.invoke({
+    result = await extract_tool.ainvoke({
         "urls": args.urls,
         "prompt": args.prompt,
         "system_prompt": args.system_prompt,
@@ -197,7 +197,7 @@ async def run_extract(args, tools):
 async def run_research(args, tools):
     """Run the research command."""
     research_tool = await tools.get_research_tool()
-    result = await research_tool.invoke({
+    result = await research_tool.ainvoke({
         "query": args.query,
         "max_depth": args.max_depth,
         "time_limit": args.time_limit,
@@ -209,7 +209,7 @@ async def run_research(args, tools):
 async def run_crawl(args, tools):
     """Run the crawl command."""
     crawl_tool = await tools.get_crawl_tool()
-    result = await crawl_tool.invoke({
+    result = await crawl_tool.ainvoke({
         "url": args.url,
         "max_depth": args.max_depth,
         "limit": args.limit,
@@ -224,7 +224,7 @@ async def run_crawl(args, tools):
 async def run_status(args, tools):
     """Run the status command."""
     status_tool = await tools.get_status_tool()
-    result = await status_tool.invoke({
+    result = await status_tool.ainvoke({
         "crawl_id": args.crawl_id
     })
     return result

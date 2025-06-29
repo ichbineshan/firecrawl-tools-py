@@ -32,7 +32,7 @@ scrape_tool = await tools.get_scrape_tool()
 search_tool = await tools.get_search_tool()
 
 # Use the tools
-content = await scrape_tool.invoke({
+content = await scrape_tool.ainvoke({
     "url": "https://example.com",
     "formats": ["markdown"],
     "only_main_content": True
@@ -46,7 +46,7 @@ Extract content from a single URL with advanced options.
 
 ```python
 scrape_tool = await tools.get_scrape_tool()
-result = await scrape_tool.invoke({
+result = await scrape_tool.ainvoke({
     "url": "https://example.com",
     "formats": ["markdown", "html"],
     "only_main_content": True,
@@ -60,7 +60,7 @@ Search the web and optionally extract content from results.
 
 ```python
 search_tool = await tools.get_search_tool()
-results = await search_tool.invoke({
+results = await search_tool.ainvoke({
     "query": "Python web scraping",
     "limit": 5,
     "scrape_options": {
@@ -75,7 +75,7 @@ Discover all indexed URLs on a website.
 
 ```python
 map_tool = await tools.get_map_tool()
-urls = await map_tool.invoke({
+urls = await map_tool.ainvoke({
     "url": "https://example.com",
     "include_subdomains": True,
     "limit": 100
@@ -87,7 +87,7 @@ Extract specific information using LLM capabilities.
 
 ```python
 extract_tool = await tools.get_extract_tool()
-data = await extract_tool.invoke({
+data = await extract_tool.ainvoke({
     "urls": ["https://example.com"],
     "prompt": "Extract all product names and prices",
     "schema": {
@@ -113,7 +113,7 @@ Conduct comprehensive web research.
 
 ```python
 research_tool = await tools.get_research_tool()
-analysis = await research_tool.invoke({
+analysis = await research_tool.ainvoke({
     "query": "Latest developments in AI",
     "max_depth": 3,
     "time_limit": 120,
@@ -126,7 +126,7 @@ Crawl entire websites asynchronously.
 
 ```python
 crawl_tool = await tools.get_crawl_tool()
-job_id = await crawl_tool.invoke({
+job_id = await crawl_tool.ainvoke({
     "url": "https://example.com",
     "max_depth": 2,
     "limit": 100,
@@ -139,7 +139,7 @@ Check the status of crawl jobs.
 
 ```python
 status_tool = await tools.get_status_tool()
-status = await status_tool.invoke({
+status = await status_tool.ainvoke({
     "crawl_id": "your_crawl_job_id"
 })
 ```
@@ -220,8 +220,10 @@ tools = FirecrawlTools(api_key="your_api_key")
 All tools include comprehensive error handling and will raise `ToolException` with descriptive error messages:
 
 ```python
+from langchain_core.tools import ToolException
+
 try:
-    result = await scrape_tool.invoke({"url": "https://example.com"})
+    result = await scrape_tool.ainvoke({"url": "https://example.com"})
 except ToolException as e:
     print(f"Error: {e}")
 ```
@@ -242,4 +244,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history. 
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.

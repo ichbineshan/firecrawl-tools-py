@@ -24,8 +24,7 @@ firecrawl_tools/
 │   └── cli.py                  # Command-line interface
 │
 ├── examples/                   # Usage examples
-│   ├── basic_usage.py          # Basic usage demonstration
-│   └── advanced_usage.py       # Advanced scenarios and patterns
+│   └── react_agent_example.py  # ReAct agent demonstration
 │
 └── tests/                      # Test suite
     ├── __init__.py             # Test package initialization
@@ -75,16 +74,10 @@ firecrawl_tools/
 
 ### Examples (`examples/`)
 
-#### `basic_usage.py`
-- Simple usage examples
-- Getting started guide
-- Common use cases
-
-#### `advanced_usage.py`
-- Complex scenarios
-- Error handling patterns
-- Batch operations
-- Integration examples
+#### `react_agent_example.py`
+- Modern, comprehensive usage example
+- Demonstrates intelligent agent integration
+- Covers scraping, searching, extraction, mapping, and more
 
 ### Tests (`tests/`)
 
@@ -190,12 +183,12 @@ scrape_tool = await tools.get_scrape_tool()
 search_tool = await tools.get_search_tool()
 
 # Use tools
-result = await scrape_tool.invoke({"url": "https://example.com"})
+result = await scrape_tool.ainvoke({"url": "https://example.com"})
 ```
 
 ### Tool Interface
 All tools follow the LangChain tool interface:
-- Async `invoke()` method
+- Async `ainvoke()` method
 - Structured input/output
 - Error handling with `ToolException`
 - Comprehensive documentation

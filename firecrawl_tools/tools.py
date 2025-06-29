@@ -119,7 +119,7 @@ class SearchWebTool(BaseFirecrawlTool):
     
     def _create_tool(self):
         @tool
-        async def search_web_firecrawl_tool(
+        async def search_web_tool(
             query: str,
             limit: int = 5,
             lang: str = "en",
@@ -155,12 +155,16 @@ class SearchWebTool(BaseFirecrawlTool):
                     scrape_options=scrape_options
                 )
                 
-                if not response.success:
-                    raise ToolException(f"Search failed: {response.error}")
+                success = response.get('success', True)
+                data = response.get('data', [])
+                error = response.get('error', None)
+                
+                if not success:
+                    raise ToolException(f"Search failed: {error}")
                 
                 # Format the results
                 results = []
-                for i, result in enumerate(response.data, 1):
+                for i, result in enumerate(data, 1):
                     result_text = f"Result {i}:\n"
                     result_text += f"URL: {result.get('url', 'No URL')}\n"
                     result_text += f"Title: {result.get('title', 'No title')}\n"
@@ -176,7 +180,7 @@ class SearchWebTool(BaseFirecrawlTool):
             except Exception as e:
                 raise ToolException(f"Error searching web: {str(e)}")
         
-        return search_web_firecrawl_tool
+        return search_web_tool
 
 
 class MapUrlTool(BaseFirecrawlTool):
@@ -342,10 +346,10 @@ class DeepResearchTool(BaseFirecrawlTool):
                     max_urls=max_urls
                 )
                 
-                if not response.get('success', True):
-                    raise ToolException(f"Deep research failed: {response.get('error', 'Unknown error')}")
+                if not response.success:
+                    raise ToolException(f"Deep research failed: {response.error}")
                 
-                return response.get('data', {}).get('finalAnalysis', 'No analysis available')
+                return response.data.final_analysis if response.data else 'No analysis available'
                 
             except Exception as e:
                 raise ToolException(f"Error conducting deep research: {str(e)}")
@@ -403,10 +407,10 @@ class CrawlUrlTool(BaseFirecrawlTool):
                     include_paths=include_paths
                 )
                 
-                if not response.get('success', True):
-                    raise ToolException(f"Crawl failed: {response.get('error', 'Unknown error')}")
+                if not response.success:
+                    raise ToolException(f"Crawl failed: {response.error}")
                 
-                return f"Started crawl for {url} with job ID: {response.get('id')}. Use check_crawl_status to check progress."
+                return f"Started crawl for {url} with job ID: {response.id}. Use check_crawl_status to check progress."
                 
             except Exception as e:
                 raise ToolException(f"Error starting crawl: {str(e)}")
@@ -439,25 +443,25 @@ class CheckCrawlStatusTool(BaseFirecrawlTool):
             try:
                 response = await self.client.check_crawl_status(id=crawl_id)
                 
-                if not response.get('success', True):
-                    raise ToolException(f"Status check failed: {response.get('error', 'Unknown error')}")
+                if not response.success:
+                    raise ToolException(f"Status check failed: {response.error}")
                 
                 status_info = f"Crawl Status:\n"
-                status_info += f"Status: {response.get('status', 'Unknown')}\n"
-                status_info += f"Progress: {response.get('completed', 0)}/{response.get('total', 0)}\n"
-                status_info += f"Credits Used: {response.get('creditsUsed', 0)}\n"
-                status_info += f"Expires At: {response.get('expiresAt', 'Unknown')}\n"
+                status_info += f"Status: {response.status}\n"
+                status_info += f"Progress: {response.completed}/{response.total}\n"
+                status_info += f"Credits Used: {response.creditsUsed}\n"
+                status_info += f"Expires At: {response.expiresAt}\n"
                 
-                if response.get('data'):
+                if response.data:
                     status_info += f"\nResults:\n"
-                    for i, doc in enumerate(response['data'][:5], 1):  # Show first 5 results
-                        content = doc.get('markdown', doc.get('html', 'No content'))
+                    for i, doc in enumerate(response.data[:5], 1):  # Show first 5 results
+                        content = doc.markdown or doc.html or 'No content'
                         status_info += f"Result {i}:\n"
-                        status_info += f"URL: {doc.get('url', 'Unknown URL')}\n"
+                        status_info += f"URL: {doc.url}\n"
                         status_info += f"Content: {content[:100]}{'...' if len(content) > 100 else ''}\n\n"
                     
-                    if len(response['data']) > 5:
-                        status_info += f"... and {len(response['data']) - 5} more results\n"
+                    if len(response.data) > 5:
+                        status_info += f"... and {len(response.data) - 5} more results\n"
                 
                 return status_info
                 

@@ -132,65 +132,72 @@ Examples:
 async def run_scrape(args, tools):
     """Run the scrape command."""
     scrape_tool = await tools.get_scrape_tool()
-    result = await scrape_tool.ainvoke({
+    scrape_args = {
         "url": args.url,
         "formats": args.formats,
         "only_main_content": args.only_main_content,
-        "wait_for": args.wait_for,
-        "timeout": args.timeout,
         "mobile": args.mobile
-    })
+    }
+    if args.wait_for is not None:
+        scrape_args["wait_for"] = args.wait_for
+    if args.timeout is not None:
+        scrape_args["timeout"] = args.timeout
+    result = await scrape_tool.ainvoke(scrape_args)
     return result
 
 
 async def run_search(args, tools):
     """Run the search command."""
     search_tool = await tools.get_search_tool()
-    scrape_options = None
-    if args.scrape:
-        scrape_options = {"formats": ["markdown"], "onlyMainContent": True}
-    
-    result = await search_tool.ainvoke({
+    search_args = {
         "query": args.query,
         "limit": args.limit,
         "lang": args.lang,
-        "country": args.country,
-        "scrape_options": scrape_options
-    })
+        "country": args.country
+    }
+    if args.scrape:
+        search_args["scrape_options"] = {"formats": ["markdown"], "onlyMainContent": True}
+    result = await search_tool.ainvoke(search_args)
     return result
 
 
 async def run_map(args, tools):
     """Run the map command."""
     map_tool = await tools.get_map_tool()
-    result = await map_tool.ainvoke({
+    map_args = {
         "url": args.url,
-        "search": args.search,
         "ignore_sitemap": args.ignore_sitemap,
         "sitemap_only": args.sitemap_only,
         "include_subdomains": args.include_subdomains,
         "limit": args.limit
-    })
+    }
+    if args.search is not None:
+        map_args["search"] = args.search
+    result = await map_tool.ainvoke(map_args)
     return result
 
 
 async def run_extract(args, tools):
     """Run the extract command."""
     extract_tool = await tools.get_extract_tool()
-    
+    extract_args = {
+        "urls": args.urls
+    }
+    if args.prompt is not None:
+        extract_args["prompt"] = args.prompt
+    if args.system_prompt is not None:
+        extract_args["system_prompt"] = args.system_prompt
     schema = None
     if args.schema:
         with open(args.schema, 'r') as f:
             schema = json.load(f)
-    
-    result = await extract_tool.ainvoke({
-        "urls": args.urls,
-        "prompt": args.prompt,
-        "system_prompt": args.system_prompt,
-        "schema": schema,
-        "allow_external_links": args.allow_external_links,
-        "enable_web_search": args.enable_web_search
-    })
+    if schema is not None:
+        extract_args["schema"] = schema
+    if args.allow_external_links:
+        extract_args["allow_external_links"] = True
+    if args.enable_web_search:
+        extract_args["enable_web_search"] = True
+    result = await extract_tool.ainvoke(extract_args)
     return result
 
 
@@ -280,6 +287,10 @@ async def main():
         print(f"Unexpected error: {e}", file=sys.stderr)
         sys.exit(1)
 
+
+def entrypoint():
+    import asyncio
+    asyncio.run(main())
 
 if __name__ == "__main__":
     asyncio.run(main()) 

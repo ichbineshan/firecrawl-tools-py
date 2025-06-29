@@ -62,7 +62,7 @@ Repository = "https://github.com/ichbineshan/firecrawl-tools-py"
 "Changelog" = "https://github.com/ichbineshan/firecrawl-tools-py/blob/main/CHANGELOG.md"
 
 [project.scripts]
-firecrawl-tools = "firecrawl_tools.cli:main"
+firecrawl-tools = "firecrawl_tools.cli:entrypoint"
 
 [tool.hatch.build.targets.wheel]
 packages = ["firecrawl_tools"]

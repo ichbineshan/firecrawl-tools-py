@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "firecrawl-tools"
-version = "0.1.0"
+version = "0.1.2-dev"
 description = "A comprehensive collection of async tools for web scraping, searching, and data extraction using the Firecrawl API"
 readme = "README.md"
 license = {text = "MIT"}

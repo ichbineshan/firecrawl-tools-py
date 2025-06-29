@@ -38,7 +38,7 @@ This project is committed to providing a welcoming and inclusive environment for
 
 1. Clone your fork:
    ```bash
-   git clone https://github.com/yourusername/firecrawl-tools.git
+   git clone https://github.com/ichbineshan/firecrawl-tools-py.git
    cd firecrawl-tools
    ```
 

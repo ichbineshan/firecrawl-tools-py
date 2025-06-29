@@ -144,6 +144,65 @@ status = await status_tool.invoke({
 })
 ```
 
+## ReAct Agent Integration
+
+Firecrawl Tools work seamlessly with LangChain's ReAct agents, allowing you to build intelligent applications that automatically choose the right tool for each task.
+
+### Basic ReAct Agent Setup
+
+```python
+import asyncio
+from langchain_openai import ChatOpenAI
+from langchain.agents import initialize_agent, AgentType
+from firecrawl_tools import FirecrawlTools
+
+async def create_react_agent():
+    # Initialize Firecrawl tools
+    tools = FirecrawlTools(api_key="your_firecrawl_api_key")
+    tools_dict = await tools.get_tools_dict()
+    tool_list = list(tools_dict.values())
+    
+    # Initialize OpenAI LLM
+    llm = ChatOpenAI(
+        openai_api_key="your_openai_api_key",
+        temperature=0,
+        model="gpt-4o-mini"
+    )
+    
+    # Create ReAct agent
+    agent = initialize_agent(
+        tool_list,
+        llm,
+        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+        verbose=True,
+        max_iterations=5,
+        handle_parsing_errors=True,
+    )
+    
+    return agent
+
+# Use the agent
+agent = await create_react_agent()
+result = await agent.ainvoke(
+    "Find the main topic of https://example.com and summarize it in 2 sentences."
+)
+```
+
+### Example Queries
+
+The ReAct agent can handle various natural language queries:
+
+- **"What are the latest news headlines on cricbuzz.com?"**
+- **"Extract all product names and prices from https://example.com"**
+- **"Search for information about Python web scraping and provide a summary."**
+- **"Map all URLs on https://example.com and list the top 5 pages."**
+
+The agent automatically chooses the appropriate Firecrawl tool (scrape, search, extract, map, etc.) based on the query.
+
+### Complete Example
+
+See [examples/react_agent_example.py](examples/react_agent_example.py) for a complete working example with multiple queries and error handling.
+
 ## Configuration
 
 You can configure the tools using environment variables or by passing configuration directly:
@@ -177,9 +236,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- Documentation: [https://github.com/yourusername/firecrawl-tools](https://github.com/yourusername/firecrawl-tools)
-- Issues: [https://github.com/yourusername/firecrawl-tools/issues](https://github.com/yourusername/firecrawl-tools/issues)
-- Discussions: [https://github.com/yourusername/firecrawl-tools/discussions](https://github.com/yourusername/firecrawl-tools/discussions)
+- Documentation: [https://github.com/ichbineshan/firecrawl-tools-py](https://github.com/ichbineshan/firecrawl-tools-py)
+- Issues: [https://github.com/ichbineshan/firecrawl-tools-py/issues](https://github.com/ichbineshan/firecrawl-tools-py/issues)
+- Discussions: [https://github.com/ichbineshan/firecrawl-tools-py/discussions](https://github.com/ichbineshan/firecrawl-tools-py/discussions)
 
 ## Changelog
 

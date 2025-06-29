@@ -18,8 +18,8 @@ from .tools import (
 )
 
 __version__ = "0.1.0"
-__author__ = "Firecrawl Tools Contributors"
-__email__ = "your.email@example.com"
+__author__ = "Eshan Pandey"
+__email__ = "eshanpandeyy@gmail.com"
 
 __all__ = [
     "FirecrawlTools",
